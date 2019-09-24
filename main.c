@@ -1,23 +1,4 @@
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "minishell.h"
-
-void read_stdin(t_minishell *sp)
-{
-    int x;
-    char ch[10008];
-    sp->value = (char *)malloc(sizeof(char));
-    while (((x = read(STDIN_FILENO, &ch, 10008)) > 0))
-    {
-        ch[x] = '\0';
-        ft_strcpy(sp->value, ch);
-        break;
-    }
-}
 
 int display()
 {
@@ -27,25 +8,42 @@ int display()
     return (0);
 }
 
-void parse_stdin(t_minishell *sp)
-{
-    char **ret = (char **)malloc(sizeof(char *));
-    ret = ft_strsplit(sp->value, ' ');
-    printf("%s\n", ret[0]);
-}
-
 void handle_sigint()
 {
     ft_putchar('\n');
     display();
 }
 
+int count_2d(char **str)
+{
+    int x = 0;
+    while (str[x])
+        x++;
+    return (x);
+}
+
+void copy_env(t_minishell *sp)
+{
+    extern char **environ;
+    int x;
+
+    x = 0;
+    sp->environcpy = (char **)malloc(sizeof(char *) * (count_2d(environ)));
+    while (environ[x])
+    {
+        sp->environcpy[x] = ft_strdup(environ[x]);
+        x++;
+    }
+    sp->environcpy[x] = NULL;
+}
+
 void init_loop(t_minishell *sp)
 {
+    copy_env(sp);
     while (1)
     {
         display();
-        signal(SIGINT, handle_sigint);
+        // signal(SIGINT, handle_sigint);
         read_stdin(sp);
         parse_stdin(sp);
     }
@@ -53,7 +51,6 @@ void init_loop(t_minishell *sp)
 
 int main()
 {
-    extern char **environ;
     t_minishell *sp;
     sp = (t_minishell *)malloc(sizeof(t_minishell));
     init_loop(sp);

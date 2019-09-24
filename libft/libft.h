@@ -52,7 +52,7 @@ size_t ft_strlcat(char *s1, const char *s2, size_t n);
 char *ft_strdup(const char *s1);
 char *ft_strcpy(char *s1, char *s2);
 int ft_strcmp(const char *s1, const char *s2);
-char *ft_strchr(const char *s1, int c);
+char *ft_strchr(char *s, int c);
 char *ft_strcat(char *s1, char *s2);
 void *ft_memalloc(size_t n);
 void *ft_memset(void *a, int b, size_t n);
