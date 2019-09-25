@@ -16,6 +16,7 @@ typedef struct s_minishell
     char **environcpy;
     char *str;
     char **ret;
+    int hld;
 } t_minishell;
 
 void read_stdin(t_minishell *sp);

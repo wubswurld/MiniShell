@@ -2,8 +2,8 @@ NAME = minishell
 
 CFILES = main.c parse.c
 
-FLAGS = -Wall -Werror -Wextra -g 
-# -fsanitize=address
+FLAGS = -Wall -Werror -Wextra -g
+#  -fsanitize=address
 
 LIBFT = libft
 
