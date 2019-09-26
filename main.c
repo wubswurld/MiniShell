@@ -2,7 +2,7 @@
 
 int display()
 {
-    char str[1000 + 1];
+    char str[1000];
     ft_putstr(getcwd(str, 1000));
     ft_putstr("> ");
     return (0);
