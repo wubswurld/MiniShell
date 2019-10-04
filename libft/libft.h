@@ -16,6 +16,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "get_next_line.h"
 
 #define IS_WHITE(x) (x == '\n' || x == '\t' || x == ' ')
 #define IS_C(x) (x == c)
@@ -94,4 +95,5 @@ int ft_memcmp(const void *s1, const void *s2, size_t n);
 int ft_word(char const *str, char c);
 char *ft_count_str(char *str, int x);
 void ft_putnbr(int n);
+int get_next_line(const int fd, char **line);
 #endif
