@@ -10,7 +10,7 @@
 #include <string.h>
 #include <signal.h>
 
-#define DSP 3
+#define DSP 6
 #define QUOTE(x) ((x == '"'))
 
 typedef struct s_minishell
@@ -31,8 +31,9 @@ typedef struct s_cmd_line
     dispatcher *chooseDist;
 } t_cmd_line;
 
-void cd();
-void echo();
+int count_2d(char **str);
+int display();
+void handle_sigint();
 void read_stdin(t_minishell *sp);
 void parse_stdin(t_minishell *sp);
 char *handle_tild(t_minishell *sp, char *str);
@@ -42,6 +43,9 @@ char *handle_exp(t_minishell *sp, char *str);
 void handle_quote(char **str, t_minishell *sp);
 void echo(char **cmds, t_minishell *sp);
 void cd(char **cmds, t_minishell *sp);
+void put_env(char **cmds, t_minishell *sp);
+void unset_env(char **cmds, t_minishell *sp);
+void set_env(char **cmds, t_minishell *sp);
 char *rep_dis(t_minishell *sp, char *str);
 void exit_func();
 

@@ -10,20 +10,7 @@ int display()
     return (0);
 }
 
-void handle_sigint()
-{
-    ft_putchar('\n');
-    display();
-}
-
-int count_2d(char **str)
-{
-    int x = 0;
-    while (str[x])
-        x++;
-    return (x);
-}
-
+//copy extern char **environ into 2d array for env related commands
 void copy_env(t_minishell *sp)
 {
     extern char **environ;
@@ -40,17 +27,11 @@ void copy_env(t_minishell *sp)
 }
 
 //copy a 2-d array of the extern char **environ, display a prompt,
-//read a line from stdin, and start parse, use signal to capture control C
+//read a signle line from stdin using get next line, and start parse, use signal to capture control C
 
 void init_loop(t_minishell *sp)
 {
     copy_env(sp);
-    int x = 0;
-    while (sp->environcpy[x])
-    {
-        printf("env %s\n", sp->environcpy[x]);
-        x++;
-    }
     while (1)
     {
         display();
@@ -80,6 +61,6 @@ int main()
     sp = (t_minishell *)malloc(sizeof(t_minishell));
     sp->value = (char *)malloc(sizeof(char));
     init_loop(sp);
-    free_file(sp);
+    // free_file(sp);
     return (0);
 }

@@ -1,18 +1,53 @@
 #include "minishell.h"
 
+void change_env(t_minishell *sp, char *str)
+{
+    int x = 0;
+    char *old = ft_strdup("OLDPWD=");
+    // char *new = ft_strdup("PWD=");
+    while (sp->environcpy[x])
+    {
+        if (ft_strncmp("OLDPWD=", sp->environcpy[x], 7) == 0)
+        {
+            old = ft_strcat(old, str);
+            ft_strcpy(sp->environcpy[x], old);
+            free(old);
+        }
+        x++;
+    }
+}
+
+void put_env(char **str, t_minishell *sp)
+{
+    int x;
+
+    x = 0;
+    str = NULL;
+    while (sp->environcpy[x])
+    {
+        write(1, sp->environcpy[x], ft_strlen(sp->environcpy[x]));
+        ft_putchar('\n');
+        x++;
+    }
+}
+
 void cd(char **cmds, t_minishell *sp)
 {
     char *new;
     char *tmp;
+    char *hld = NULL;
+
     tmp = ft_strdup("OLDPWD=");
     new = ft_strdup("HOME=");
     new = find_env(sp, new);
+    hld = getcwd(hld, 1000);
     if (cmds[1] == NULL || ft_strcmp(cmds[1], "--") == 0)
         chdir(new);
     else if (ft_strcmp(cmds[1], "-") == 0)
     {
         tmp = find_env(sp, tmp);
         chdir(tmp);
+        change_env(sp, hld);
     }
     else if (cmds[1] && cmds[2] == NULL)
         chdir(cmds[1]);
