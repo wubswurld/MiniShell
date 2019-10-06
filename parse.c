@@ -1,7 +1,6 @@
 #include "minishell.h"
 
 // builtin functions accessed through cmd[0] being compared to the name
-
 t_cmd_line dispatch_cmd[DSP] = {
     {"echo", &echo},
     {"cd", &cd},

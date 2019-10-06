@@ -64,7 +64,6 @@ void set_env(char **cmds, t_minishell *sp)
                     sp->environcpy[x] = ft_strcat(cmds[1], cmds[2]);
                 else
                     sp->environcpy[x] = ft_strdup(cmds[1]);
-                // x += 1;
             }
             x++;
         }

@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+//set paths for cd -
 void change_env(t_minishell *sp, char *str)
 {
     int x = 0;
@@ -16,7 +17,7 @@ void change_env(t_minishell *sp, char *str)
         x++;
     }
 }
-
+//print list of env vars copied earlier
 void put_env(char **str, t_minishell *sp)
 {
     int x;
@@ -31,6 +32,8 @@ void put_env(char **str, t_minishell *sp)
     }
 }
 
+//set Home path for cd '~', change dir and oldpwd for cd -
+// else just cd into the second arg
 void cd(char **cmds, t_minishell *sp)
 {
     char *new;
@@ -59,6 +62,7 @@ void cd(char **cmds, t_minishell *sp)
     }
 }
 
+//parse arguments for quotes expansions arent handled inside of quotes
 void handle_quote(char **str, t_minishell *sp)
 {
     int x = 1;
@@ -70,10 +74,7 @@ void handle_quote(char **str, t_minishell *sp)
         {
             z = 1;
             while (!QUOTE(str[x][z]))
-            {
-                ft_putchar(str[x][z]);
-                z++;
-            }
+                ft_putchar(str[x][z++]);
             if (str[x + 1])
                 ft_putchar(' ');
         }
@@ -89,6 +90,7 @@ void handle_quote(char **str, t_minishell *sp)
         ft_putchar('\n');
 }
 
+//handle echo and -n flag and check quotes
 void echo(char **cmds, t_minishell *sp)
 {
     sp->n_flag = 0;
