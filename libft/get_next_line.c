@@ -12,10 +12,10 @@
 
 #include "get_next_line.h"
 
-static int		findnewline(char **s, char **line, int fd, int ret)
+static int findnewline(char **s, char **line, int fd, int ret)
 {
-	char		*tmp;
-	int			len;
+	char *tmp;
+	int len;
 
 	len = 0;
 	while (s[fd][len] != '\n' && s[fd][len] != '\0')
@@ -41,12 +41,12 @@ static int		findnewline(char **s, char **line, int fd, int ret)
 	return (1);
 }
 
-int				get_next_line(const int fd, char **line)
+int get_next_line(const int fd, char **line)
 {
-	static char		*s[2355];
-	char			buf[BUFF_SIZE + 1];
-	char			*tmp;
-	int				ret;
+	static char *s[2355];
+	char buf[BUFF_SIZE + 1];
+	char *tmp;
+	int ret;
 
 	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
@@ -57,7 +57,7 @@ int				get_next_line(const int fd, char **line)
 		free(s[fd]);
 		s[fd] = tmp;
 		if (ft_strchr(buf, '\n'))
-			break ;
+			break;
 	}
 	if (fd < 0 || line == NULL || ret < 0)
 		return (-1);

@@ -8,13 +8,14 @@ char *handle_tild(t_minishell *sp, char *str)
 
     y = 0;
     x = 0;
+    sp = NULL;
     while (str[y] != '~')
         y++;
     new = ft_strdup("HOME=");
-    while (sp->environcpy[x])
+    while (envcpy[x])
     {
-        if (ft_strncmp(new, sp->environcpy[x], 5) == 0)
-            new = ft_strdup(sp->environcpy[x] + 5);
+        if (ft_strncmp(new, envcpy[x], 5) == 0)
+            new = ft_strdup(envcpy[x] + 5);
         x++;
     }
     ft_strcpy(str + y, new);
@@ -41,8 +42,8 @@ char *rep_dis(t_minishell *sp, char *str)
 
     while (sp->environcpy[x])
     {
-        if (ft_strncmp(str, sp->environcpy[x], 11) == 0)
-            new = ft_strdup(sp->environcpy[x] + ft_strlen(str));
+        if (ft_strncmp(str, envcpy[x], 11) == 0)
+            new = ft_strdup(envcpy[x] + ft_strlen(str));
         x++;
     }
     ft_strcpy(str, new);
@@ -53,11 +54,11 @@ char *find_env(t_minishell *sp, char *str)
 {
     int x = 0;
     char *new;
-
-    while (sp->environcpy[x])
+    sp = NULL;
+    while (envcpy[x])
     {
-        if (ft_strccmp(str, sp->environcpy[x], '=') == 0)
-            new = ft_strdup(sp->environcpy[x] + ft_strlen(str));
+        if (ft_strccmp(str, envcpy[x], '=') == 0)
+            new = ft_strdup(envcpy[x] + ft_strlen(str));
         x++;
     }
     ft_strcpy(str, new);

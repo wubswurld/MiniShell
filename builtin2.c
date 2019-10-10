@@ -8,12 +8,14 @@ void exit_func()
 void switch_env(char **tmp, t_minishell *sp)
 {
     int q = 0;
+    sp = NULL;
     while (tmp[q])
     {
-        sp->environcpy[q] = ft_strdup(tmp[q]);
+        envcpy[q] = ft_strdup(tmp[q]);
         q++;
     }
-    sp->environcpy[q] = NULL;
+    free(tmp);
+    envcpy[q] = NULL;
 }
 
 void unset_env(char **cmds, t_minishell *sp)
@@ -22,20 +24,20 @@ void unset_env(char **cmds, t_minishell *sp)
     int y = 0;
     int val = 0;
     int z = 0;
-    char **tmp = (char **)malloc(sizeof(char *) * count_2d(sp->environcpy - 1));
+    char **tmp = (char **)malloc(sizeof(char *) * count_2d(envcpy - 1));
     if (cmds[1])
     {
         cmds[x] = ft_strcat(cmds[x], "=");
-        while (sp->environcpy[y])
+        while (envcpy[y])
         {
-            if (ft_strccmp(cmds[x], sp->environcpy[y], '=') == 0)
+            if (ft_strccmp(cmds[x], envcpy[y], '=') == 0)
             {
                 val = 1;
                 y += 1;
             }
             else
             {
-                tmp[z] = ft_strdup(sp->environcpy[y]);
+                tmp[z] = ft_strdup(envcpy[y]);
                 z++;
             }
             y++;
@@ -52,29 +54,30 @@ void set_env(char **cmds, t_minishell *sp)
 {
     int x = 0;
     int val = 0;
+    sp = NULL;
     if (cmds[1])
     {
         cmds[1] = ft_strcat(cmds[1], "=");
-        while (sp->environcpy[x])
+        while (envcpy[x])
         {
-            if (ft_strccmp(cmds[1], sp->environcpy[x], '=') == 0)
+            if (ft_strccmp(cmds[1], envcpy[x], '=') == 0)
             {
                 val = 1;
                 if (cmds[2])
-                    sp->environcpy[x] = ft_strcat(cmds[1], cmds[2]);
+                    envcpy[x] = ft_strcat(cmds[1], cmds[2]);
                 else
-                    sp->environcpy[x] = ft_strdup(cmds[1]);
+                    envcpy[x] = ft_strdup(cmds[1]);
             }
             x++;
         }
         if (val == 0)
         {
             if (cmds[2])
-                sp->environcpy[x] = ft_strdup(ft_strcat(cmds[1], cmds[2]));
+                envcpy[x] = ft_strdup(ft_strcat(cmds[1], cmds[2]));
             else
-                sp->environcpy[x] = ft_strdup(cmds[1]);
+                envcpy[x] = ft_strdup(cmds[1]);
         }
-        sp->environcpy[x + 1] = NULL;
+        envcpy[x + 1] = NULL;
     }
     else
         ft_putstr("setenv: too few arguments\n");

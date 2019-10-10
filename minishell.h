@@ -13,6 +13,8 @@
 #define DSP 6
 #define QUOTE(x) ((x == '"'))
 
+char **envcpy;
+
 typedef struct s_minishell
 {
     char *value;
@@ -34,6 +36,7 @@ typedef struct s_cmd_line
 int count_2d(char **str);
 int display();
 void handle_sigint();
+void exec_cmd(t_minishell *sp, char **cmds);
 void read_stdin(t_minishell *sp);
 void parse_stdin(t_minishell *sp);
 char *handle_tild(t_minishell *sp, char *str);
@@ -48,5 +51,6 @@ void unset_env(char **cmds, t_minishell *sp);
 void set_env(char **cmds, t_minishell *sp);
 char *rep_dis(t_minishell *sp, char *str);
 void exit_func();
+void free_2d(char **str);
 
 #endif

@@ -4,14 +4,15 @@
 void change_env(t_minishell *sp, char *str)
 {
     int x = 0;
+    sp = NULL;
     char *old = ft_strdup("OLDPWD=");
     // char *new = ft_strdup("PWD=");
-    while (sp->environcpy[x])
+    while (envcpy[x])
     {
-        if (ft_strncmp("OLDPWD=", sp->environcpy[x], 7) == 0)
+        if (ft_strncmp("OLDPWD=", envcpy[x], 7) == 0)
         {
             old = ft_strcat(old, str);
-            ft_strcpy(sp->environcpy[x], old);
+            ft_strcpy(envcpy[x], old);
             free(old);
         }
         x++;
@@ -24,9 +25,10 @@ void put_env(char **str, t_minishell *sp)
 
     x = 0;
     str = NULL;
-    while (sp->environcpy[x])
+    sp = NULL;
+    while (envcpy[x])
     {
-        write(1, sp->environcpy[x], ft_strlen(sp->environcpy[x]));
+        write(1, envcpy[x], ft_strlen(envcpy[x]));
         ft_putchar('\n');
         x++;
     }
@@ -45,21 +47,28 @@ void cd(char **cmds, t_minishell *sp)
     new = find_env(sp, new);
     hld = getcwd(hld, 1000);
     if (cmds[1] == NULL || ft_strcmp(cmds[1], "--") == 0)
+    {
         chdir(new);
+    }
     else if (ft_strcmp(cmds[1], "-") == 0)
     {
         tmp = find_env(sp, tmp);
         chdir(tmp);
         change_env(sp, hld);
+        free(hld);
     }
     else if (cmds[1] && cmds[2] == NULL)
+    {
         chdir(cmds[1]);
+    }
     else if (cmds[1] && cmds[2])
     {
         ft_putstr("cd: string not in pwd: ");
         ft_putstr(cmds[1]);
         ft_putchar('\n');
     }
+    free(new);
+    free(tmp);
 }
 
 //parse arguments for quotes expansions arent handled inside of quotes
