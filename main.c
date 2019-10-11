@@ -47,15 +47,16 @@ void free_2d(char **str)
 int main()
 {
     t_minishell *sp;
-
-    sp = (t_minishell *)malloc(sizeof(t_minishell));
+    //will memory be null, check if memory is null, when you have memory always nullify
+    sp = ft_memalloc(sizeof(t_minishell));
     copy_env();
     while (1)
     {
         display();
         signal(SIGINT, handle_sigint);
         get_next_line(0, &sp->value);
-        parse_stdin(sp);
+        if (sp->value)
+            parse_stdin(sp);
     }
     free_2d(envcpy);
     return (0);

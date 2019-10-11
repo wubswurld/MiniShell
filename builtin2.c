@@ -14,7 +14,7 @@ void switch_env(char **tmp, t_minishell *sp)
         envcpy[q] = ft_strdup(tmp[q]);
         q++;
     }
-    free(tmp);
+    // free_2d(tmp);
     envcpy[q] = NULL;
 }
 
@@ -48,6 +48,7 @@ void unset_env(char **cmds, t_minishell *sp)
     }
     else
         ft_putstr("unsetenv: too little arguments\n");
+    free_2d(tmp);
 }
 
 void set_env(char **cmds, t_minishell *sp)
@@ -62,6 +63,7 @@ void set_env(char **cmds, t_minishell *sp)
         {
             if (ft_strccmp(cmds[1], envcpy[x], '=') == 0)
             {
+                // free(envcpy[x]);
                 val = 1;
                 if (cmds[2])
                     envcpy[x] = ft_strcat(cmds[1], cmds[2]);
@@ -81,4 +83,5 @@ void set_env(char **cmds, t_minishell *sp)
     }
     else
         ft_putstr("setenv: too few arguments\n");
+    // free_2d(cmds);
 }

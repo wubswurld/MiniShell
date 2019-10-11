@@ -6,17 +6,16 @@ void change_env(t_minishell *sp, char *str)
     int x = 0;
     sp = NULL;
     char *old = ft_strdup("OLDPWD=");
-    // char *new = ft_strdup("PWD=");
     while (envcpy[x])
     {
         if (ft_strncmp("OLDPWD=", envcpy[x], 7) == 0)
         {
             old = ft_strcat(old, str);
             ft_strcpy(envcpy[x], old);
-            free(old);
         }
         x++;
     }
+    free(old);
 }
 //print list of env vars copied earlier
 void put_env(char **str, t_minishell *sp)
@@ -28,7 +27,7 @@ void put_env(char **str, t_minishell *sp)
     sp = NULL;
     while (envcpy[x])
     {
-        write(1, envcpy[x], ft_strlen(envcpy[x]));
+        ft_putstr(envcpy[x]);
         ft_putchar('\n');
         x++;
     }
@@ -38,24 +37,23 @@ void put_env(char **str, t_minishell *sp)
 // else just cd into the second arg
 void cd(char **cmds, t_minishell *sp)
 {
-    char *new;
+    char *new = NULL;
     char *tmp;
     char *hld = NULL;
 
-    tmp = ft_strdup("OLDPWD=");
-    new = ft_strdup("HOME=");
-    new = find_env(sp, new);
     hld = getcwd(hld, 1000);
     if (cmds[1] == NULL || ft_strcmp(cmds[1], "--") == 0)
     {
+        new = find_env(sp, ft_strdup("HOME="));
         chdir(new);
+        free(new);
     }
     else if (ft_strcmp(cmds[1], "-") == 0)
     {
-        tmp = find_env(sp, tmp);
+        tmp = find_env(sp, ft_strdup("OLDPWD="));
         chdir(tmp);
         change_env(sp, hld);
-        free(hld);
+        free(tmp);
     }
     else if (cmds[1] && cmds[2] == NULL)
     {
@@ -67,8 +65,7 @@ void cd(char **cmds, t_minishell *sp)
         ft_putstr(cmds[1]);
         ft_putchar('\n');
     }
-    free(new);
-    free(tmp);
+    free(hld);
 }
 
 //parse arguments for quotes expansions arent handled inside of quotes

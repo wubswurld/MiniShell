@@ -15,12 +15,12 @@
 #define IS_C(x) (x == c)
 #define NOT_C(x) (x != c)
 
-char	**ft_strsplit(char const *s, char c)
+char **ft_strsplit(char const *s, char c)
 {
-	int			a;
-	int			i;
-	char		**head;
-	int			x;
+	int a;
+	int i;
+	char **head;
+	int x;
 
 	x = 0;
 	i = 0;

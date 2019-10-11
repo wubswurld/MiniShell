@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char *handle_tild(t_minishell *sp, char *str)
+char *handle_tild(char *str)
 {
     int x;
     int y;
@@ -8,18 +8,16 @@ char *handle_tild(t_minishell *sp, char *str)
 
     y = 0;
     x = 0;
-    sp = NULL;
     while (str[y] != '~')
         y++;
-    new = ft_strdup("HOME=");
     while (envcpy[x])
     {
-        if (ft_strncmp(new, envcpy[x], 5) == 0)
+        if (ft_strncmp("HOME=", envcpy[x], 5) == 0)
             new = ft_strdup(envcpy[x] + 5);
         x++;
     }
     ft_strcpy(str + y, new);
-    // free(new);
+    free(new);
     return (str);
 }
 
@@ -55,6 +53,7 @@ char *find_env(t_minishell *sp, char *str)
     int x = 0;
     char *new;
     sp = NULL;
+
     while (envcpy[x])
     {
         if (ft_strccmp(str, envcpy[x], '=') == 0)
@@ -62,6 +61,7 @@ char *find_env(t_minishell *sp, char *str)
         x++;
     }
     ft_strcpy(str, new);
+    free(new);
     return (str);
 }
 
