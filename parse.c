@@ -86,7 +86,6 @@ void fin_cmd(t_minishell *sp, char **cmds)
     //     ft_putstr(cmds[0]);
     //     ft_putchar('\n');
     // }
-    // free_2d(cmds);
 }
 
 // if the command is a builtin dispatch it to its function else check if its a executable, regular file or directory

@@ -54,5 +54,6 @@ void exit_func();
 void free_2d(char **str);
 char *make_path(char *s1, char *s2);
 int ft_start(char *s1, char *s2);
+char *find_env1(t_minishell *sp, char *str);
 
 #endif
