@@ -41,8 +41,8 @@ void read_stdin(t_minishell *sp);
 void parse_stdin(t_minishell *sp);
 char *handle_tild(char *str);
 int ft_strccmp(const char *s1, const char *s2, char c);
-char *find_env(t_minishell *sp, char *str);
-char *handle_exp(t_minishell *sp, char *str);
+char *find_env(char *str);
+char *handle_exp(char *str);
 void handle_quote(char **str, t_minishell *sp);
 void echo(char **cmds, t_minishell *sp);
 void cd(char **cmds, t_minishell *sp);
@@ -54,6 +54,6 @@ void exit_func();
 void free_2d(char **str);
 char *make_path(char *s1, char *s2);
 int ft_start(char *s1, char *s2);
-char *find_env1(t_minishell *sp, char *str);
+char *find_env1(char *str);
 
 #endif

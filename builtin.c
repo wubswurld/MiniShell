@@ -44,13 +44,13 @@ void cd(char **cmds, t_minishell *sp)
     hld = getcwd(hld, 1000);
     if (cmds[1] == NULL || ft_strcmp(cmds[1], "--") == 0)
     {
-        new = find_env(sp, ft_strdup("HOME="));
+        new = find_env("HOME=");
         chdir(new);
         free(new);
     }
     else if (ft_strcmp(cmds[1], "-") == 0)
     {
-        tmp = find_env(sp, ft_strdup("OLDPWD="));
+        tmp = find_env("OLDPWD=");
         chdir(tmp);
         change_env(sp, hld);
         free(tmp);

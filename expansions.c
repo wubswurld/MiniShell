@@ -49,47 +49,35 @@ char *rep_dis(t_minishell *sp, char *str)
     return (str);
 }
 
-char *find_env1(t_minishell *sp, char *str)
+char *find_env1(char *str)
 {
     int x = 0;
     char *new = NULL;
-    sp = NULL;
 
     while (envcpy[x])
     {
         if (ft_strccmp(str, envcpy[x], '=') == 0)
-        {
-            // new = ft_strdup(envcpy[x]);
             return (ft_strdup(envcpy[x]));
-        }
         x++;
     }
     free(new);
     return (NULL);
 }
 
-char *find_env(t_minishell *sp, char *str)
+char *find_env(char *str)
 {
     int x = 0;
-    char *new = NULL;
-    sp = NULL;
 
     while (envcpy[x])
     {
         if (ft_strccmp(str, envcpy[x], '=') == 0)
-        {
-            new = ft_strdup(envcpy[x] + ft_strlen(str));
-            ft_strcpy(str, new);
-            free(new);
-            return (str);
-        }
+            return (ft_strdup(envcpy[x] + ft_strlen(str)));
         x++;
     }
-    free(new);
     return (NULL);
 }
 
-char *handle_exp(t_minishell *sp, char *str)
+char *handle_exp(char *str)
 {
     char *new;
     int x;
@@ -97,8 +85,10 @@ char *handle_exp(t_minishell *sp, char *str)
     x = 0;
     while (str[x] == '$')
         x++;
-    new = ft_strdup(str + x);
+    new = ft_strnew(ft_strlen(str + x) + 1);
+    ft_strcpy(new, str + x);
     ft_strcat(new, "=");
-    new = find_env(sp, new);
-    return (new);
+    char *tmp = find_env(new);
+    free(new);
+    return (tmp);
 }
