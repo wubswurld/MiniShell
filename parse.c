@@ -44,9 +44,9 @@ char *get_bin(char **cmds)
     new = find_env("PATH=");
     char **tmp = ft_strsplit(new, ':');
     free(new);
-    int y = 0;
+    int y = -1;
     //iterate through 2_d array of path, if cmds[0] matches tmp[y] strdup cmds[0] else add the cmd to the end of the /bin path if the file cannot be lstated it is not a executable
-    while (tmp[y])
+    while (tmp[++y])
     {
         if (ft_start(cmds[0], tmp[y]))
             path = ft_strdup(cmds[0]);
@@ -62,7 +62,7 @@ char *get_bin(char **cmds)
         {
             free(path);
         }
-        y++;
+        // y++;
     }
     free_2d(tmp);
     return (NULL);
@@ -72,17 +72,17 @@ void fin_cmd(t_minishell *sp, char **cmds)
 {
     char *path;
     struct stat buf;
-    if (!(lstat(cmds[0], &buf) != -1))
+    path = get_bin(cmds);
+    if (!(lstat(cmds[0], &buf) != -1) && path == NULL)
     {
         ft_putstr("minishell: command not found: ");
         ft_putstr(cmds[0]);
         ft_putchar('\n');
     }
-    if ((path = get_bin(cmds)))
+    if (path)
     {
         lstat(cmds[0], &buf);
         exec_fork(sp, path, cmds);
-        free(path);
     }
     //if the executable is not found in the path it has to be a directory or a exe like ./a.out
     if (lstat(cmds[0], &buf) != -1)
@@ -93,6 +93,7 @@ void fin_cmd(t_minishell *sp, char **cmds)
         else if (S_ISREG(buf.st_mode))
             exec_fork(sp, cmds[0], cmds);
     }
+    free(path);
 }
 
 // if the command is a builtin dispatch it to its function else check if its a executable, regular file or directory
