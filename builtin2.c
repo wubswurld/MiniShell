@@ -9,15 +9,25 @@ void switch_env(char **tmp)
 {
     int q = 0;
     int y = 0;
-    envcpy = ft_memalloc(sizeof(char *) * (count_2d(tmp)));
+    envcpy = ft_memalloc(sizeof(char *) * (count_2d(tmp) + 1));
     while (tmp[q])
     {
-        if (tmp[q])
-            envcpy[y++] = ft_strdup(tmp[q]);
+        envcpy[y] = ft_strdup(tmp[q]);
         q++;
-        // y++;
+        y++;
     }
     envcpy[y] = NULL;
+}
+
+void free_env(char **str)
+{
+    int x = 0;
+    while (x < count_2d(envcpy))
+    {
+        free(str[x]);
+        x++;
+    }
+    free(str);
 }
 
 void unset(char *cmds)
@@ -31,12 +41,14 @@ void unset(char *cmds)
     {
         if (ft_strccmp(cmds, envcpy[y], '=') == 0)
         {
+            // free(envcpy[y]);
             val = 1;
             y += 1;
         }
         else
         {
             tmp[z] = ft_strdup(envcpy[y]);
+            // free(envcpy[y]);
             z++;
         }
         y++;
@@ -56,7 +68,7 @@ void unset_env(char **cmds, t_minishell *sp)
         ft_putstr("unsetenv: too little arguments\n");
     else if (cmds[1] && cmds[2])
         ft_putstr("unsetenv: too many arguments\n");
-    else if ((tmp = find_env1(ft_strcat(cmds[1], "="))) != NULL)
+    else if ((tmp = find_env(ft_strcat(cmds[1], "="))) != NULL)
     {
         unset(cmds[1]);
         free(tmp);

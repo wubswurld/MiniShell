@@ -12,6 +12,7 @@
 
 #define DSP 6
 #define QUOTE(x) ((x == '"'))
+#define SM_QUOTE(x) ((x == 39))
 
 char **envcpy;
 
@@ -33,14 +34,15 @@ typedef struct s_cmd_line
     dispatcher *chooseDist;
 } t_cmd_line;
 
+//helpers
 int count_2d(char **str);
 int display();
 void handle_sigint();
-void exec_cmd(t_minishell *sp, char **cmds);
-void read_stdin(t_minishell *sp);
-void parse_stdin(t_minishell *sp);
-char *handle_tild(char *str);
 int ft_strccmp(const char *s1, const char *s2, char c);
+void free_2d(char **str);
+char *make_path(char *s1, char *s2);
+int ft_start(char *s1, char *s2);
+//builtin
 char *find_env(char *str);
 char *handle_exp(char *str);
 void handle_quote(char **str, t_minishell *sp);
@@ -51,9 +53,10 @@ void unset_env(char **cmds, t_minishell *sp);
 void set_env(char **cmds, t_minishell *sp);
 char *rep_dis(t_minishell *sp, char *str);
 void exit_func();
-void free_2d(char **str);
-char *make_path(char *s1, char *s2);
-int ft_start(char *s1, char *s2);
-char *find_env1(char *str);
+char *handle_tild(char *str);
+//other cmds
+void exec_cmd(t_minishell *sp, char **cmds);
+void read_stdin(t_minishell *sp);
+void parse_stdin(t_minishell *sp);
 
 #endif

@@ -49,21 +49,7 @@ char *rep_dis(t_minishell *sp, char *str)
     return (str);
 }
 
-char *find_env1(char *str)
-{
-    int x = 0;
-    char *new = NULL;
-
-    while (envcpy[x])
-    {
-        if (ft_strccmp(str, envcpy[x], '=') == 0)
-            return (ft_strdup(envcpy[x]));
-        x++;
-    }
-    free(new);
-    return (NULL);
-}
-
+//takes a string and returns environ var value of that key
 char *find_env(char *str)
 {
     int x = 0;
@@ -77,6 +63,7 @@ char *find_env(char *str)
     return (NULL);
 }
 
+//handle '$', cmp everything after a '$' to environment vars in envcopy, return the result
 char *handle_exp(char *str)
 {
     char *new;

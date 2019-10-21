@@ -68,6 +68,18 @@ void cd(char **cmds, t_minishell *sp)
     free(hld);
 }
 
+int check_quote(char *str)
+{
+    int x = 0;
+    while (str[x])
+    {
+        if (str[x] == '"')
+            return (0);
+        x++;
+    }
+    return (1);
+}
+
 //parse arguments for quotes expansions arent handled inside of quotes
 void handle_quote(char **str, t_minishell *sp)
 {
@@ -78,11 +90,18 @@ void handle_quote(char **str, t_minishell *sp)
     {
         if (QUOTE(str[x][0]))
         {
-            z = 1;
-            while (!QUOTE(str[x][z]))
-                ft_putchar(str[x][z++]);
-            if (str[x + 1])
-                ft_putchar(' ');
+            if (check_quote(str[x]))
+            {
+                z = 1;
+                while (!QUOTE(str[x][z]))
+                    ft_putchar(str[x][z++]);
+                if (str[x + 1])
+                    ft_putchar(' ');
+            }
+            else
+            {
+                ft_putstr("Minishell: Echo: Needed second Quote");
+            }
         }
         else
         {
