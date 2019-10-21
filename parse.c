@@ -72,11 +72,14 @@ void fin_cmd(t_minishell *sp, char **cmds)
 {
     char *path;
     struct stat buf;
-    int q = 0;
-
+    if (!(lstat(cmds[0], &buf) != -1))
+    {
+        ft_putstr("minishell: command not found: ");
+        ft_putstr(cmds[0]);
+        ft_putchar('\n');
+    }
     if ((path = get_bin(cmds)))
     {
-        q = 1;
         lstat(cmds[0], &buf);
         exec_fork(sp, path, cmds);
         free(path);
@@ -85,17 +88,10 @@ void fin_cmd(t_minishell *sp, char **cmds)
     if (lstat(cmds[0], &buf) != -1)
     {
         //checks if its a directory or regular file
-        q = 1;
         if (S_ISDIR(buf.st_mode))
             chdir(cmds[0]);
         else if (S_ISREG(buf.st_mode))
             exec_fork(sp, cmds[0], cmds);
-    }
-    else if (q == 0)
-    {
-        ft_putstr("minishell: command not found: ");
-        ft_putstr(cmds[0]);
-        ft_putchar('\n');
     }
 }
 
@@ -127,17 +123,17 @@ void parse_stdin(t_minishell *sp)
     char **dhole;
     char **fhold;
 
-    x = 0;
+    x = -1;
     //split entire args by ';' so cd $PWD; ls becomes | cd $PWD | ls in a 2_d array and free value passed in from getnextline
     fhold = ft_strsplit(sp->value, ';');
     free(sp->value);
-    while (fhold[x])
+    while (fhold[++x])
     {
-        z = 0;
+        z = -1;
         // split each argument which is now in a row in a 2_d array into a new 2_d array split from each space
         dhole = ft_strsplit(fhold[x], ' ');
         //iterate through that 2_d array and swap in any expansion
-        while (dhole[z])
+        while (dhole[++z])
         {
             if (ft_strrchr(dhole[z], '$'))
             {
@@ -147,11 +143,9 @@ void parse_stdin(t_minishell *sp)
             }
             else if (ft_strchr(dhole[z], '~'))
                 dhole[z] = handle_tild(dhole[z]);
-            z++;
         }
         exec_cmd(sp, dhole);
         free_2d(dhole);
-        x++;
     }
     free_2d(fhold);
 }

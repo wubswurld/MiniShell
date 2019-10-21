@@ -61,6 +61,6 @@ int main()
             parse_stdin(&sp);
     }
     //free global 2_d array
-    // free_2d(envcpy);
+    free_2d(envcpy);
     return (0);
 }
