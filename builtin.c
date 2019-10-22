@@ -1,5 +1,21 @@
 #include "minishell.h"
 
+//print list of env vars copied earlier
+void put_env(char **str, t_minishell *sp)
+{
+    int x;
+
+    x = 0;
+    str = NULL;
+    sp = NULL;
+    while (envcpy[x])
+    {
+        ft_putstr(envcpy[x]);
+        ft_putchar('\n');
+        x++;
+    }
+}
+
 //set paths for cd -
 void change_env(t_minishell *sp, char *str)
 {
@@ -17,22 +33,6 @@ void change_env(t_minishell *sp, char *str)
     }
     free(old);
 }
-//print list of env vars copied earlier
-void put_env(char **str, t_minishell *sp)
-{
-    int x;
-
-    x = 0;
-    str = NULL;
-    sp = NULL;
-    while (envcpy[x])
-    {
-        ft_putstr(envcpy[x]);
-        ft_putchar('\n');
-        x++;
-    }
-}
-
 //set Home path for cd '~', change dir and oldpwd for cd -
 // else just cd into the second arg
 void cd(char **cmds, t_minishell *sp)
@@ -41,6 +41,7 @@ void cd(char **cmds, t_minishell *sp)
     char *tmp;
     char *hld = NULL;
 
+    sp = NULL;
     hld = getcwd(hld, 1000);
     if (cmds[1] == NULL || ft_strcmp(cmds[1], "--") == 0)
     {
@@ -51,8 +52,12 @@ void cd(char **cmds, t_minishell *sp)
     else if (ft_strcmp(cmds[1], "-") == 0)
     {
         tmp = find_env("OLDPWD=");
-        chdir(tmp);
-        change_env(sp, hld);
+        if (chdir(tmp) == 0)
+        {
+            ft_putstr(tmp);
+            ft_putchar('\n');
+            // change_env(sp, hld);
+        }
         free(tmp);
     }
     else if (cmds[1] && cmds[2] == NULL)
@@ -70,7 +75,7 @@ void cd(char **cmds, t_minishell *sp)
 
 int check_quote(char *str)
 {
-    int x = 0;
+    int x = 1;
     while (str[x])
     {
         if (str[x] == '"')
@@ -98,10 +103,10 @@ void handle_quote(char **str, t_minishell *sp)
                 if (str[x + 1])
                     ft_putchar(' ');
             }
-            else
-            {
-                ft_putstr("Minishell: Echo: Needed second Quote");
-            }
+            // if (!(check_quote(str[x])))
+            // {
+            // ft_putstr("Minishell: Echo: Needed second Quote\n");
+            // }
         }
         else
         {

@@ -41,14 +41,12 @@ void unset(char *cmds)
     {
         if (ft_strccmp(cmds, envcpy[y], '=') == 0)
         {
-            // free(envcpy[y]);
             val = 1;
             y += 1;
         }
         else
         {
             tmp[z] = ft_strdup(envcpy[y]);
-            // free(envcpy[y]);
             z++;
         }
         y++;

@@ -62,7 +62,6 @@ char *get_bin(char **cmds)
         {
             free(path);
         }
-        // y++;
     }
     free_2d(tmp);
     return (NULL);
