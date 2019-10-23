@@ -1,81 +1,77 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expansions.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jawatter <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/21 22:15:55 by jawatter          #+#    #+#             */
+/*   Updated: 2019/10/21 22:16:12 by jawatter         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char *handle_tild(char *str)
+char	*handle_tild(char *str)
 {
-    int x;
-    int y;
-    char *new;
+	int		x;
+	int		y;
+	char	*new;
 
-    y = 0;
-    x = 0;
-    while (str[y] != '~')
-        y++;
-    while (envcpy[x])
-    {
-        if (ft_strncmp("HOME=", envcpy[x], 5) == 0)
-            new = ft_strdup(envcpy[x] + 5);
-        x++;
-    }
-    ft_strcpy(str + y, new);
-    free(new);
-    return (str);
+	y = 0;
+	x = 0;
+	while (str[y] != '~')
+		y++;
+	while (g_envcpy[x])
+	{
+		if (ft_strncmp("HOME=", g_envcpy[x], 5) == 0)
+			new = ft_strdup(g_envcpy[x] + 5);
+		x++;
+	}
+	ft_strcpy(str + y, new);
+	free(new);
+	return (str);
 }
 
-int ft_strccmp(const char *s1, const char *s2, char c)
+int		ft_strccmp(const char *s1, const char *s2, char c)
 {
-    int x;
+	int		x;
 
-    x = 0;
-    if (!c)
-        return (0);
-    while (s1[x] && s2[x] && s1[x] == s2[x] && s2[x] != '=')
-        x++;
-    return (((unsigned char *)s1)[x] - ((unsigned char *)s2)[x]);
+	x = 0;
+	if (!c)
+		return (0);
+	while (s1[x] && s2[x] && s1[x] == s2[x] && s2[x] != '=')
+		x++;
+	return (((unsigned char *)s1)[x] - ((unsigned char *)s2)[x]);
 }
 
-char *rep_dis(t_minishell *sp, char *str)
+char	*find_env(char *str)
 {
-    int x = 0;
-    char *new;
+	int x;
 
-    while (sp->environcpy[x])
-    {
-        if (ft_strncmp(str, envcpy[x], 11) == 0)
-            new = ft_strdup(envcpy[x] + ft_strlen(str));
-        x++;
-    }
-    ft_strcpy(str, new);
-    free(new);
-    return (str);
+	x = 0;
+	while (g_envcpy[x])
+	{
+		if (ft_strccmp(str, g_envcpy[x], '=') == 0)
+			return (ft_strdup(g_envcpy[x] + ft_strlen(str)));
+		x++;
+	}
+	return (NULL);
 }
 
-//takes a string and returns environ var value of that key
-char *find_env(char *str)
+char	*handle_exp(char *str)
 {
-    int x = 0;
+	char	*new;
+	char	*tmp;
+	int		x;
 
-    while (envcpy[x])
-    {
-        if (ft_strccmp(str, envcpy[x], '=') == 0)
-            return (ft_strdup(envcpy[x] + ft_strlen(str)));
-        x++;
-    }
-    return (NULL);
-}
-
-//handle '$', cmp everything after a '$' to environment vars in envcopy, return the result
-char *handle_exp(char *str)
-{
-    char *new;
-    int x;
-
-    x = 0;
-    while (str[x] == '$')
-        x++;
-    new = ft_strnew(ft_strlen(str + x) + 1);
-    ft_strcpy(new, str + x);
-    ft_strcat(new, "=");
-    char *tmp = find_env(new);
-    free(new);
-    return (tmp);
+	x = 0;
+	while (str[x] == '$')
+		x++;
+	new = ft_strnew(ft_strlen(str + x) + 1);
+	ft_strcpy(new, str + x);
+	ft_strcat(new, "=");
+	tmp = find_env(new);
+	free(new);
+	return (tmp);
 }
