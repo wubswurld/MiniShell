@@ -12,9 +12,11 @@
 
 #include "minishell.h"
 
-int		display(void)
+//display current working directory and a '>'
+
+int display(void)
 {
-	char	*str;
+	char *str;
 
 	str = NULL;
 	str = getcwd(str, 1000);
@@ -24,11 +26,13 @@ int		display(void)
 	return (0);
 }
 
-void	copy_env(void)
+//copy extern char **environ into 2d array for env related commands
+
+void copy_env(void)
 {
-	extern char	**environ;
-	int			x;
-	int			len;
+	extern char **environ;
+	int x;
+	int len;
 
 	x = 0;
 	len = count_2d(environ);
@@ -41,24 +45,16 @@ void	copy_env(void)
 	g_envcpy[x] = NULL;
 }
 
-void	free_2d(char **str)
-{
-	int		x;
+//initialize values and start shell loop
+//copy a 2-d array of the extern char **environ, display a prompt,
+//read a signle line from stdin using get next line, and start parse, use signal to capture control C
 
-	x = 0;
-	while (str[x])
-	{
-		free(str[x]);
-		x++;
-	}
-	free(str);
-}
-
-int		main(void)
+int main(void)
 {
 	t_minishell sp;
 
 	copy_env();
+	sp.value = NULL;
 	while (1)
 	{
 		display();

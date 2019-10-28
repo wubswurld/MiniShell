@@ -1,6 +1,6 @@
 NAME = minishell
 
-CFILES = main.c parse.c expansions.c builtin.c builtin2.c helpers.c more.c
+CFILES = main.c parse.c expansions.c builtin.c builtin2.c helpers.c more.c additional.c
 
 FLAGS = -Wall -Werror -Wextra -g 
 # -fsanitize=address

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	echo(char **cmds, t_minishell *sp)
+void echo(char **cmds, t_minishell *sp)
 {
 	sp->n_flag = 0;
 	if (!cmds[1])
@@ -22,10 +22,10 @@ void	echo(char **cmds, t_minishell *sp)
 	handle_quote(cmds, sp);
 }
 
-void	is_quote(char *str)
+void is_quote(char *str)
 {
 	int z;
-	int	len;
+	int len;
 
 	len = ft_strlen(str);
 	if (str[len - 1] == '"')
@@ -38,27 +38,54 @@ void	is_quote(char *str)
 		ft_putstr("Minishell: Echo: Needed second Quote");
 }
 
-void	fin_env(char **cmds, int x, int val)
+int find_env_pos(char *str)
 {
-	cmds[1] = ft_strcat(cmds[1], "=");
-	while (g_envcpy[++x])
+	int x;
+
+	x = 0;
+	while (g_envcpy[x])
 	{
-		if (ft_strccmp(cmds[1], g_envcpy[x], '=') == 0)
-		{
-			free(g_envcpy[x]);
-			val = 1;
-			if (cmds[2])
-				g_envcpy[x] = ft_strdup(ft_strcat(cmds[1], cmds[2]));
-			else
-				g_envcpy[x] = ft_strdup(cmds[1]);
-		}
+		if (ft_strccmp(str, g_envcpy[x], '=') == 0)
+			return (x);
+		x++;
 	}
-	if (val == 0)
+	return (x);
+}
+
+char **fix_env(int val)
+{
+	int x = 0;
+	char **tmp = NULL;
+	tmp = ft_memalloc(sizeof(char *) * (val + 1));
+	while (g_envcpy[x] && x < val)
 	{
+		tmp[x] = ft_strdup(g_envcpy[x]);
+		x++;
+	}
+	free_2d(g_envcpy);
+	return (tmp);
+}
+
+void fin_env(char **cmds, int val)
+{
+	char *tmp;
+	tmp = ft_strjoin(cmds[1], "=");
+	val = find_env_pos(tmp);
+	if (g_envcpy[val] != NULL)
+	{
+		free(g_envcpy[val]);
 		if (cmds[2])
-			g_envcpy[x] = ft_strdup(ft_strcat(cmds[1], cmds[2]));
+			g_envcpy[val] = ft_strjoin(tmp, cmds[2]);
 		else
-			g_envcpy[x] = ft_strdup(cmds[1]);
+			g_envcpy[val] = ft_strdup(tmp);
 	}
-	g_envcpy[x + 1] = NULL;
+	else
+	{
+		g_envcpy = fix_env(val + 1);
+		if (cmds[2])
+			g_envcpy[val] = ft_strjoin(tmp, cmds[2]);
+		else
+			g_envcpy[val] = ft_strdup(tmp);
+	}
+	free(tmp);
 }

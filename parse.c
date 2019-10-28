@@ -12,7 +12,9 @@
 
 #include "minishell.h"
 
-t_cmd_line		g_dispatch_cmd[DSP] = {
+// builtin functions accessed through cmd[0] being compared to the name
+
+t_cmd_line g_dispatch_cmd[DSP] = {
 	{"echo", &echo},
 	{"cd", &cd},
 	{"exit", &exit_func},
@@ -21,55 +23,44 @@ t_cmd_line		g_dispatch_cmd[DSP] = {
 	{"setenv", &set_env},
 };
 
-int		exec_fork(t_minishell *sp, char *path, char **cmds)
+// go through 2d array of path split
+
+char *get_bin(char **cmds, t_minishell *sp)
 {
-	pid_t child;
-
-	sp = NULL;
-	child = fork();
-	if (child == 0)
+	//find path env and split it at each ':', if the executable is not in the path, add a '/' and concatenate it to the end
+	//funky implementation but neccessary to prevent segfaults when path env is not present
+	sp->y = 0;
+	if ((sp->new = find_env("PATH=")) != NULL)
 	{
-		execve(path, cmds, g_envcpy);
+		sp->tmp = ft_strsplit(sp->new, ':');
+		free(sp->new);
 	}
-	else if (child < 0)
+	else
+		return (NULL);
+	while (sp->tmp[sp->y])
 	{
-		ft_putstr("wubshell could not create process\n");
-		return (1);
-	}
-	wait(&child);
-	return (0);
-}
-
-char	*get_bin(char **cmds, t_minishell *sp)
-{
-	int				y;
-	struct stat		buf;
-
-	sp->new = find_env("PATH=");
-	sp->tmp = ft_strsplit(sp->new, ':');
-	free(sp->new);
-	y = -1;
-	while (sp->tmp[++y])
-	{
-		if (ft_start(cmds[0], sp->tmp[y]))
+		if (ft_start(cmds[0], sp->tmp[sp->y]))
 			sp->path = ft_strdup(cmds[0]);
 		else
-			sp->path = make_path(sp->tmp[y], cmds[0]);
-		if (lstat(sp->path, &buf) != -1)
+			sp->path = make_path(sp->tmp[sp->y], cmds[0]);
+		if (lstat(sp->path, &sp->buf) != -1)
 		{
 			free_2d(sp->tmp);
 			return (sp->path);
 		}
 		else
 			free(sp->path);
+		sp->y++;
 	}
 	free_2d(sp->tmp);
 	return (NULL);
 }
 
-void	fin_cmd(t_minishell *sp, char **cmds)
+//if the executable is not found in the path it has to be a directory or a exe like ./a.out
+
+void fin_cmd(t_minishell *sp, char **cmds)
 {
-	char		*path;
+	char *path;
 	struct stat buf;
 
 	path = get_bin(cmds, sp);
@@ -79,12 +70,12 @@ void	fin_cmd(t_minishell *sp, char **cmds)
 		ft_putstr(cmds[0]);
 		ft_putchar('\n');
 	}
-	if (path)
+	else if (path)
 	{
 		lstat(cmds[0], &buf);
 		exec_fork(sp, path, cmds);
 	}
-	if (lstat(cmds[0], &buf) != -1)
+	else if (lstat(cmds[0], &buf) != -1)
 	{
 		if (S_ISDIR(buf.st_mode))
 			chdir(cmds[0]);
@@ -94,7 +85,9 @@ void	fin_cmd(t_minishell *sp, char **cmds)
 	free(path);
 }
 
-void	exec_cmd(t_minishell *sp, char **cmds)
+// if the command is a builtin dispatch it to its function else check if its a executable, regular file or directory
+
+void exec_cmd(t_minishell *sp, char **cmds)
 {
 	int x;
 	int y;
@@ -114,10 +107,14 @@ void	exec_cmd(t_minishell *sp, char **cmds)
 		fin_cmd(sp, cmds);
 }
 
-void	parse_stdin(t_minishell *sp)
+// split line read from stdin into arguments by the ';' then split it by spaces to handle expansions
+// iterate through your arguments which are split by spaces and handle for expansions if '~' or '$' is found
+// cd $PWD; becomes a 2_d array like so | cd | $PWD | iterate through this 2d array and check for expansions
+
+void parse_stdin(t_minishell *sp)
 {
-	int		x;
-	int		z;
+	int x;
+	int z;
 
 	x = -1;
 	sp->fhold = ft_strsplit(sp->value, ';');
@@ -125,20 +122,21 @@ void	parse_stdin(t_minishell *sp)
 	while (sp->fhold[++x])
 	{
 		z = -1;
-		sp->dhole = ft_strsplit(sp->fhold[x], ' ');
-		while (sp->dhole[++z])
+		sp->split = ft_strsplit(sp->fhold[x], ' ');
+		while (sp->split[++z])
 		{
-			if (ft_strrchr(sp->dhole[z], '$'))
+			if (ft_strrchr(sp->split[z], '$'))
 			{
-				sp->tmp1 = sp->dhole[z];
-				sp->dhole[z] = handle_exp(sp->dhole[z]);
+				sp->tmp1 = sp->split[z];
+				sp->split[z] = handle_exp(sp->split[z]);
 				free(sp->tmp1);
 			}
-			else if (ft_strchr(sp->dhole[z], '~'))
-				sp->dhole[z] = handle_tild(sp->dhole[z]);
+			else if (ft_strchr(sp->split[z], '~'))
+				sp->split[z] = handle_tild(sp->split[z]);
 		}
-		exec_cmd(sp, sp->dhole);
-		free_2d(sp->dhole);
+		if (sp->split[0])
+			exec_cmd(sp, sp->split);
+		free_2d(sp->split);
 	}
 	free_2d(sp->fhold);
 }
